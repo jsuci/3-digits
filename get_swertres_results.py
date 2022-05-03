@@ -150,6 +150,10 @@ def main():
         
         entryDate += relativedelta(months=1)
         entryYearMonth = f"{entryDate.year}-{entryDate.month}"
+
+    # display results
+    df = pd.read_csv('pcso_3d_results.csv', dtype={'mid':str,'aft':str,'eve':str})
+    print(df.iloc[-1])
         
 
 if __name__ == "__main__":

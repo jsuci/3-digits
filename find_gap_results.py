@@ -33,55 +33,69 @@ def get_gap_results(gap):
     # gap collection df
     df2 = pd.DataFrame(gapItems)
 
-    commonPairs = get_common_pairs(df2)
+    commonResults = get_repeat_results(df2)
+    if commonResults:
+        # print(f"gap: {gap}")
+        # for eachResult in commonResults:
+        #     print(f"common: {eachResult}")
+        #     print(df2.iloc[::-1])
+        #     print("\n")
 
-    if commonPairs:
-        print(f"gap: {gap}")
-        for eachPair in commonPairs:
-            print(f"pair: {eachPair}")
-            print(df2.iloc[::-1])
-            print("\n")
+        commonPairs = get_common_pairs(df2)
+        if commonPairs:
+            print(f"gap: {gap}")
+            print(f"common: {commonResults}")
+            for eachPair in commonPairs:
+                print(f"pair: {eachPair}")
+                print(df2.iloc[::-1])
+                print("\n")
 
+
+def get_repeat_results(df):
+    # process first row results
+    firstRowResults = set()
+    for eachResult in df.iloc[0, 1:]:
+        # sort each results and collect
+        sortedVal1 = ''.join(sorted(eachResult))
+        firstRowResults.add(sortedVal1)
+
+    thirdRowResults = set()
+    for eachResult in df.iloc[2, 1:]:
+        # sort each results
+        sortedVal2 = ''.join(sorted(eachResult))
+        thirdRowResults.add(sortedVal2)
+
+
+    commonResults = firstRowResults.intersection(thirdRowResults)
+
+    return commonResults
 
 
 
 def get_common_pairs(df):
 
-    # collect all pairs from all rows
-    allPairsRow = []
-
-    # collect all pairs from first row
+    # process first row
     firstRowPairs = set()
     for eachResult in df.iloc[0, 1:]:
-        # create pairs for each result
-        pairs = set([''.join(sorted(x)) for x in combinations(eachResult, 2)])
+        # create pairs for each result in this row
+        firstPairs = set([''.join(sorted(x)) for x in combinations(eachResult, 2)])
 
-        # combine all pairs to a set
-        # to remove duplicates
-        firstRowPairs = set().union(pairs)
+        # combine all pairs to a set to remove duplicates
+        firstRowPairs.update(firstPairs)
 
+    # process second row
     secondRowPairs = set()
     for eachResult in df.iloc[1, 1:]:
-        pairs = set([''.join(sorted(x)) for x in combinations(eachResult, 2)])
-        secondRowPairs = set().union(pairs)
+        secondPairs = set([''.join(sorted(x)) for x in combinations(eachResult, 2)])
+        secondRowPairs.update(secondPairs)
 
+    # process third row
     thirdRowPairs = set()
     for eachResult in df.iloc[2, 1:]:
-        pairs = set([''.join(sorted(x)) for x in combinations(eachResult, 2)])
-        thirdRowPairs = set().union(pairs)
+        thirdPairs = set([''.join(sorted(x)) for x in combinations(eachResult, 2)])
+        thirdRowPairs.update(thirdPairs)
 
-    # combine all pairs from 3 rows
-    allPairsRow.extend(chain(firstRowPairs, secondRowPairs, thirdRowPairs))
-
-
-
-
-    # collect pair that repeat 3x
-    qualifiedPairs = []
-    for e in allPairsRow:
-        if allPairsRow.count(e) == 3:
-            if e not in qualifiedPairs:
-                qualifiedPairs.append(e)
+    qualifiedPairs = firstRowPairs.intersection(secondRowPairs).intersection(thirdRowPairs)
     
     return qualifiedPairs
 
