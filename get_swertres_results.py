@@ -61,13 +61,6 @@ def read_html(entryDate, path):
 
 def record_results(htmlDoc):
 
-    # dates
-    currentDate = datetime.now().date()
-    entryDate = str_to_date(environ["ENTRY_DATE"])
-    
-    entryYearMonth = f"{entryDate.year}-{entryDate.month}"
-    currentYearMonth = f"{currentDate.year}-{currentDate.month}"
-
     # parse
     doc = HTML(html=htmlDoc)
     entries = doc.xpath("//div[contains(@id, 'suertres')]")
@@ -100,29 +93,11 @@ def record_results(htmlDoc):
             }
 
             allWebDateRes.append(webDateRes)
-        #     if entryDate < currentDate:
-        #         print(webDate)
-        #         df.loc[-1] = [webDate, webResults[0], webResults[1], webResults[2]]  # adding a row
-        #         df.index = df.index + 1  # shifting index
-        #         df.sort_index(inplace=True)
-        #     else:
-        #         to_append = [webDate, webResults[0], webResults[1], webResults[2]]
-        #         df_length = len(df)
-        #         df.loc[df_length] = to_append
+
 
     df = pd.concat([df, pd.DataFrame(allWebDateRes)])
     df.to_csv('pcso_3d_results.csv', index=False, header=True)
 
-
-
-        # allWebDateRes.append(webDateRes)
-
-    # export
-    # exportData = pd.DataFrame(allWebDateRes)
-    # if environ["HEADER"] == True:
-    #     exportData.to_csv('pcso_3d_results.csv', index=False, mode='a', header=False)
-    # else:
-    #     exportData.to_csv('pcso_3d_results.csv', index=False, mode='a', header=True)
 
     
 
@@ -153,8 +128,24 @@ def main():
 
     # display results
     df = pd.read_csv('pcso_3d_results.csv', dtype={'mid':str,'aft':str,'eve':str})
-    print(df.iloc[-1])
-        
+
+    # add advance date entry to file by comparing the current date of file +1
+    # and the current date today.
+    aheadFileDate = str_to_date(df.iloc[-1, 0]) + relativedelta(hours=24)
+    if aheadFileDate == currentDate:
+
+        # add another condition to only replace if there is no existing
+        # advance date value present if there is then do not replace
+        if aheadFileDate not in df.values:
+            aheadFileDateStr = date_to_str(aheadFileDate)
+            df.loc[len(df.index)] = [aheadFileDateStr, '-', '-', '-'] 
+
+    df.to_csv('pcso_3d_results.csv', index=False, header=True)
+
+    print(df.iloc[-2])
+
+
+
 
 if __name__ == "__main__":
     main()
