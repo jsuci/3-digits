@@ -1,5 +1,5 @@
 
-from itertools import combinations
+from itertools import combinations, chain
 import pandas as pd
 
 
@@ -100,9 +100,9 @@ def get_common_pairs(df):
 
 
 def main():
-    allGapItems = []
+
     for i in range(2, 100):
-        allGapItems.append(get_gap_results(i))
+        get_gap_results(i)
 
 
 

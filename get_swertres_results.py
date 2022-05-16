@@ -132,8 +132,8 @@ def main():
     # add advance date entry to file by comparing the current date of file +1
     # and the current date today.
     aheadFileDate = str_to_date(df.iloc[-1, 0]) + relativedelta(hours=24)
+    
     if aheadFileDate == currentDate:
-
         # add another condition to only replace if there is no existing
         # advance date value present if there is then do not replace
         if aheadFileDate not in df.values:
@@ -142,7 +142,7 @@ def main():
 
     df.to_csv('pcso_3d_results.csv', index=False, header=True)
 
-    print(df.iloc[-2])
+    print(df.iloc[-1])
 
 
 
