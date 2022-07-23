@@ -69,6 +69,8 @@ def save_results(htmlStr):
     environ["LAST_ENTRY_DATE"] = df["date"].iloc[-1]
     set_key(DOTENV_FILE, "LAST_ENTRY_DATE", environ["LAST_ENTRY_DATE"])
 
+    print(df.iloc[-1])
+
 def date_list():
     # get current date
     currentDateObj = datetime.now().date()
