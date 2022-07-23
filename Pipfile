@@ -9,6 +9,7 @@ python-decouple = "*"
 python-dateutil = "*"
 python-dotenv = "*"
 pandas = "*"
+openpyxl = "*"
 
 [dev-packages]
 

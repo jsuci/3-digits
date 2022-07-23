@@ -18,7 +18,7 @@ def get_gap_results(gap):
         if len(gapItems) >= 3:
             break
 
-        # value of gap to be added to gapCounter
+        # value of gap to be i`i``added to gapCounter
         # gap variuable remains constant
         gapCounter += gap
 
