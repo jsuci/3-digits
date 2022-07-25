@@ -35,6 +35,12 @@ def save_results(htmlStr):
     # read existing results
     df = pd.read_csv('pcso_3d_results.csv', dtype={'mid':str,'aft':str,'eve':str})
 
+    # attach current date to end of results
+    currentDateObj = datetime.now().date()
+    currentDateStr = datetime.strftime(currentDateObj, "%d %a %b %Y").lower()
+    if currentDateStr not in df.values:
+        df.loc[len(df.index)] = [currentDateStr, '-', '-', '-']
+
     # loop through all entries
     allWebDateRes = []
     for el in entries:
@@ -70,6 +76,8 @@ def save_results(htmlStr):
     set_key(DOTENV_FILE, "LAST_ENTRY_DATE", environ["LAST_ENTRY_DATE"])
 
     print(df.iloc[-1])
+
+
 
 def date_list():
     # get current date
