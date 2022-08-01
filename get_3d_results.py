@@ -82,10 +82,12 @@ def update_results():
     currentDateStr = datetime.strftime(currentDateObj, "%d %a %b %Y").lower()
     if currentDateStr not in df.values:
         df.loc[len(df.index)] = [currentDateStr, '-', '-', '-']
+        df.to_csv('pcso_3d_results.csv', index=False, header=True
 
     # update last entry date
     environ["LAST_ENTRY_DATE"] = df["date"].iloc[-1]
     set_key(DOTENV_FILE, "LAST_ENTRY_DATE", environ["LAST_ENTRY_DATE"])
+
 
 
 
