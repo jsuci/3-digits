@@ -35,11 +35,7 @@ def save_results(htmlStr):
     # read existing results
     df = pd.read_csv('pcso_3d_results.csv', dtype={'mid':str,'aft':str,'eve':str})
 
-    # attach current date to end of results
-    currentDateObj = datetime.now().date()
-    currentDateStr = datetime.strftime(currentDateObj, "%d %a %b %Y").lower()
-    if currentDateStr not in df.values:
-        df.loc[len(df.index)] = [currentDateStr, '-', '-', '-']
+
 
     # loop through all entries
     allWebDateRes = []
@@ -48,7 +44,8 @@ def save_results(htmlStr):
         webDateStr = datetime.strftime(webDateObj, "%d %a %b %Y").lower()
         webResults = list(map(lambda x: x.text, el.xpath("//tr[@class='top']/td")))
 
-        if webDateStr in df.values:
+
+        if webDateStr in df['date'].values:
             df.loc[
                 df['date'] == webDateStr,
                 ['mid', 'aft', 'eve']
@@ -62,20 +59,33 @@ def save_results(htmlStr):
                 'eve': webResults[2]
             }
 
+
             allWebDateRes.append(webDateRes)
+
+
 
     # save to existing entries
     print(f"saving results.")
     df = pd.concat([df, pd.DataFrame(allWebDateRes)])
     df.to_csv('pcso_3d_results.csv', index=False, header=True)
 
-    # update last entry date
-    print(f'updating last entry to {df["date"].iloc[-1]}')
+    print(df.iloc[-1])
+    print('\n\n')
 
+
+def update_results():
+    # read existing results
+    df = pd.read_csv('pcso_3d_results.csv', dtype={'mid':str,'aft':str,'eve':str})
+
+    # attach current date to end of results
+    currentDateObj = datetime.now().date()
+    currentDateStr = datetime.strftime(currentDateObj, "%d %a %b %Y").lower()
+    if currentDateStr not in df.values:
+        df.loc[len(df.index)] = [currentDateStr, '-', '-', '-']
+
+    # update last entry date
     environ["LAST_ENTRY_DATE"] = df["date"].iloc[-1]
     set_key(DOTENV_FILE, "LAST_ENTRY_DATE", environ["LAST_ENTRY_DATE"])
-
-    print(df.iloc[-1])
 
 
 
@@ -109,6 +119,8 @@ def main():
     for everyDate in date_list():
         htmlStr = fetch_results(everyDate)
         save_results(htmlStr)
+    
+    update_results()
 
 
 if __name__ == "__main__":
