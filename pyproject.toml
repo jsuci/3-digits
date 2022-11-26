@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "3-digits"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "3_digits"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests-html = "*"
+python-decouple = "*"
+python-dateutil = "*"
+python-dotenv = "*"
+pandas = "*"
+openpyxl = "*"
+
+
+[tool.poetry.dev-dependencies]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

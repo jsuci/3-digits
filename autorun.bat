@@ -1,1 +1,3 @@
-pipenv run commands.bat
+poetry run commands.bat
+
+pause
